@@ -1,0 +1,9 @@
+version: "3"
+services:
+  video_creator:
+    build: .
+    volumes:
+      - ./out:/usr/src/app/out
+      - ./sources:/usr/src/app/sources
+    env_file:
+    - .env
