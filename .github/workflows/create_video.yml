@@ -23,7 +23,7 @@ jobs:
         run: mkdir ./google && touch ./google/credentials.json
 
       - name: Save Google Cloud credentials
-        run: echo ${{ secrets.GCLOUD_CREDENTIALS }} > ./google/credentials.json
+        run: echo "${{ secrets.GCLOUD_CREDENTIALS }}" > ./google/credentials.json
 
       - name: Test
         run: ls -al $(pwd)/google && echo $(pwd)/google
