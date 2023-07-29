@@ -23,7 +23,9 @@ jobs:
         run: mkdir ./google && touch ./google/credentials.json
 
       - name: Save Google Cloud credentials
-        run: echo "${{ secrets.GCLOUD_CREDENTIALS }}" > ./google/credentials.json
+        run: echo $GCLOUD_CREDENTIALS > ./google/credentials.json
+        env:
+          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
 
       - name: Test
         run: cat google/credentials.json
