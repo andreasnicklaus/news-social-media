@@ -1,13 +1,13 @@
 name: Build and push docker images
 
 on:
-  push:
-    branches:
-      - "main"
+  # push:
+  #   branches:
+  #     - "main"
   workflow_dispatch:
 
 jobs:
-  docker-server:
+  docker-build:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
