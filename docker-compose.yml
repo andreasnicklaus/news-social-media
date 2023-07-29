@@ -2,6 +2,7 @@ version: "3"
 services:
   video_creator:
     build: .
+    image: anicklaus/social-media-news
     volumes:
       - ./out:/usr/src/app/out
       - ./sources:/usr/src/app/sources

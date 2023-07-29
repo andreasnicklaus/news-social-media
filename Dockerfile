@@ -11,4 +11,7 @@ RUN pip install -r src/requirements.txt
 
 COPY src ./src
 
+RUN mkdir out
+RUN mkdir sources
+
 CMD [ "python", "src/main.py" ]
