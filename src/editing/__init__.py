@@ -1,5 +1,13 @@
 # Import everything needed to edit video clips
-from moviepy.editor import *
+# from moviepy.editor import *
+from moviepy.editor import (
+    AudioFileClip,
+    VideoFileClip,
+    concatenate_videoclips,
+    TextClip,
+    ImageClip,
+    CompositeVideoClip,
+)
 from .sources import filepath_from_url
 from datetime import datetime as dt
 
@@ -70,6 +78,6 @@ def create_video(video_urls, audio, title, abstract):
         f"out/{now.strftime('%Y')}-{now.strftime('%m')}-{now.strftime('%d')}.post.mp4"
     )
 
-    video.write_videofile(file_name)
+    video.write_videofile(file_name, logger=None)
 
     return file_name

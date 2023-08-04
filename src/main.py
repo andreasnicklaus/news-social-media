@@ -9,7 +9,9 @@ import os
 
 def get_video_links_from_keywords(keywords, n):
     footage = [
-        f.get("video_files") for kw in keywords for f in get_videos_by_keyword(kw, n)
+        f.get("video_files")
+        for kw in keywords
+        for f in get_videos_by_keyword(kw, n // len(keywords) + 1)
     ][:n]
 
     vid_files = []
@@ -39,14 +41,21 @@ def start():
     video_path = create_video(vid_files, audio_path, title, abstract)
 
     for f in vid_files:
-        os.remove("sources/" + f.split("/")[-1].split("?")[0])
+        filepath = "sources/" + f.split("/")[-1].split("?")[0]
+        try:
+            os.remove(filepath)
+        except Exception:
+            print(f"{filepath} not found")
 
     caption = f"""
-        {title}
-        {abstract}
-        
-        Data provided by The New York Times (https://developer.nytimes.com)"""
+    {title}
+    {abstract}
 
+    {' '.join([f'#{kw.split("(")[0].replace(" ", "").replace(",", "")}' for kw in filter(lambda kw: not kw.startswith("Content") and not kw.startswith("internal"), keywords)])}
+        
+    Data provided by The New York Times (https://developer.nytimes.com)"""
+
+    print(caption)
     send(caption, video_path)
     # post(video_path, caption)
 
