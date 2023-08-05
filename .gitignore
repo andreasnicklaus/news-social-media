@@ -3,7 +3,6 @@
 out
 google
 sources
-crontab
 
 .vscode
 .env

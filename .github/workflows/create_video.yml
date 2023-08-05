@@ -8,7 +8,7 @@ on:
 jobs:
   docker-compose-up:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Login to Docker Hub
@@ -26,9 +26,6 @@ jobs:
         run: echo $GCLOUD_CREDENTIALS > ./google/credentials.json
         env:
           GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
-
-      - name: Test
-        run: cat google/credentials.json
 
       - name: Start container
         run: docker run --name video-creator -v $(pwd)/google:/usr/src/app/google -e "GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/google/credentials.json" -e "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" -e "NEWS_API_KEY=${{ secrets.NEWS_API_KEY }}" -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" -e "GMAIL_SENDER_ADDRESS=${{ secrets.GMAIL_SENDER_ADDRESS }}" -e "GMAIL_RECEIVER_ADDRESS=${{ secrets.GMAIL_RECEIVER_ADDRESS }}" -e "GMAIL_ACCESS_TOKEN=${{ secrets.GMAIL_ACCESS_TOKEN }}" anicklaus/social-media-news

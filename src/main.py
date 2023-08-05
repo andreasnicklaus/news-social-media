@@ -7,6 +7,15 @@ from mail import send
 import os
 
 
+def clear_directory(dir):
+    for f in os.listdir(dir):
+        filepath = f"{dir}/{f.split('/')[-1].split('?')[0]}"
+        try:
+            os.remove(filepath)
+        except Exception:
+            print(f"{filepath} not found")
+
+
 def get_video_links_from_keywords(keywords, n):
     footage = [
         f.get("video_files")
@@ -31,21 +40,16 @@ def start():
     audio_text = f"{title}. {abstract}"
     word_count = len(audio_text.split(" "))
     audio_path = tts(text=audio_text)
-    print(audio_text)
+    # print(audio_text)
 
     keywords = story.get("adx_keywords").split(";")
-    print(keywords)
+    # print(keywords)
 
     vid_files = get_video_links_from_keywords(keywords, n=word_count // 5)
 
     video_path = create_video(vid_files, audio_path, title, abstract)
 
-    for f in vid_files:
-        filepath = "sources/" + f.split("/")[-1].split("?")[0]
-        try:
-            os.remove(filepath)
-        except Exception:
-            print(f"{filepath} not found")
+    clear_directory("sources")
 
     caption = f"""
     {title}
@@ -57,7 +61,10 @@ def start():
 
     print(caption)
     send(caption, video_path)
+    # TODO: integrate social media
     # post(video_path, caption)
+
+    # clear_directory("out")
 
 
 if __name__ == "__main__":
