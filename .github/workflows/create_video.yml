@@ -28,4 +28,4 @@ jobs:
           GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
 
       - name: Start container
-        run: docker run --name video-creator -v $(pwd)/google:/usr/src/app/google -e "GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/google/credentials.json" -e "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" -e "NEWS_API_KEY=${{ secrets.NEWS_API_KEY }}" -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" -e "GMAIL_SENDER_ADDRESS=${{ secrets.GMAIL_SENDER_ADDRESS }}" -e "GMAIL_RECEIVER_ADDRESS=${{ secrets.GMAIL_RECEIVER_ADDRESS }}" -e "GMAIL_ACCESS_TOKEN=${{ secrets.GMAIL_ACCESS_TOKEN }}" anicklaus/social-media-news
+        run: docker run --name video-creator -v $(pwd)/google:/usr/src/app/google -e "GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/google/credentials.json" -e "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" -e "NEWS_API_KEY=${{ secrets.NEWS_API_KEY }}" -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" -e "GMAIL_SENDER_ADDRESS=${{ secrets.GMAIL_SENDER_ADDRESS }}" -e "GMAIL_RECEIVER_ADDRESS=${{ secrets.GMAIL_RECEIVER_ADDRESS }}" -e "GMAIL_ACCESS_TOKEN=${{ secrets.GMAIL_ACCESS_TOKEN }}" -e "IG_ACCESS_TOKEN=${{ secrets.IG_ACCESS_TOKEN }}" anicklaus/social-media-news

@@ -2,9 +2,6 @@ name: Update IG access token
 on:
   schedule:
     - cron: "0 0 1 */2 *"
-  push:
-    branches:
-      - "ig_token_update"
   workflow_dispatch:
 
 jobs:
@@ -19,11 +16,6 @@ jobs:
           url: "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${{ secrets.IG_CLIENT_ID }}&client_secret=${{ secrets.IG_CLIENT_SECRET }}&fb_exchange_token=${{ secrets.IG_ACCESS_TOKEN }}"
           method: POST
 
-      - name: Show Response
-        run: |
-          echo ${{ steps.tokenRenewal.outputs.response }}
-          echo ${{ steps.tokenRenewal.outputs.headers }}
-          echo ${{ fromJson(steps.tokenRenewal.outputs.response).access_token }}
       - uses: hmanzur/actions-set-secret@v2.0.0
         with:
           name: "IG_ACCESS_TOKEN"
