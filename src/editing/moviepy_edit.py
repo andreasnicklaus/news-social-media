@@ -64,6 +64,6 @@ def create_video(out_path, file_paths, audio, title, abstract):
 
     video = CompositeVideoClip([video, titleclip, abstractclip, brandingClip])
 
-    video.write_videofile(out_path)
+    video.write_videofile(out_path, audio_codec="aac", audio_bitrate="64k")
 
     return out_path

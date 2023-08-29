@@ -62,7 +62,7 @@ def start():
     print(caption)
     send(caption, video_path)
     # TODO: integrate social media
-    # post(video_path, caption)
+    post(video_path, caption)
 
     # clear_directory("out")
 

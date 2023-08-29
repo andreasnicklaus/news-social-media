@@ -1,0 +1,23 @@
+name: Update IG access token
+on:
+  schedule:
+    - cron: "0 0 1 */2 *"
+  workflow_dispatch:
+
+jobs:
+  update-ig-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Make Request
+        id: tokenRenewal
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${{ secrets.IG_CLIENT_ID }}&client_secret=${{ secrets.IG_CLIENT_SECRET }}&fb_exchange_token=${{ secrets.IG_ACCESS_TOKEN }}"
+          method: POST
+
+      - uses: hmanzur/actions-set-secret@v2.0.0
+        with:
+          name: "IG_ACCESS_TOKEN"
+          value: ${{ fromJson(steps.tokenRenewal.outputs.response).access_token }}
+          token: ${{ secrets.GH_SECRET_UPDATE_ACCESS_TOKEN }}
