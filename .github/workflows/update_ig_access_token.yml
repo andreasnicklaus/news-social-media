@@ -2,6 +2,9 @@ name: Update IG access token
 on:
   schedule:
     - cron: "0 0 1 */2 *"
+  push:
+    branches:
+      - "ig_token_update"
   workflow_dispatch:
 
 jobs:
