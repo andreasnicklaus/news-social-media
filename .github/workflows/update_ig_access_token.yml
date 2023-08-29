@@ -28,4 +28,4 @@ jobs:
         with:
           name: "IG_ACCESS_TOKEN"
           value: ${{ fromJson(steps.tokenRenewal.outputs.response).access_token }}
-          token: ${{ secrets.GITHUB_TOKEN  }}
+          token: ${{ secrets.GH_SECRET_UPDATE_ACCESS_TOKEN }}
