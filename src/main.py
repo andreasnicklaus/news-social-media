@@ -51,8 +51,7 @@ def start():
 
     clear_directory("sources")
 
-    caption = f"""
-    {title}
+    caption = f"""{title}
     {abstract}
 
     {' '.join([f'#{kw.split("(")[0].replace(" ", "").replace(",", "")}' for kw in filter(lambda kw: not kw.startswith("Content") and not kw.startswith("internal"), keywords)])}
