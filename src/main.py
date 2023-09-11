@@ -54,6 +54,8 @@ def start():
     caption = f"""{title}
     {abstract}
 
+    #Follow for more #news everyday!
+
     {' '.join([f'#{kw.split("(")[0].replace(" ", "").replace(",", "")}' for kw in filter(lambda kw: not kw.startswith("Content") and not kw.startswith("internal"), keywords)])}
         
     Data provided by The New York Times (https://developer.nytimes.com)"""
