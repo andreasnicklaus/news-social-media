@@ -17,10 +17,12 @@ def clear_directory(dir):
 
 
 def get_video_links_from_keywords(keywords, n):
+    videos = [get_videos_by_keyword(kw, n // len(keywords) + 1) for kw in keywords]
+
     footage = [
-        f.get("video_files")
-        for kw in keywords
-        for f in get_videos_by_keyword(kw, n // len(keywords) + 1)
+        video_object.get("video_files")
+        for video_object in videos
+        if video_object is not None
     ][:n]
 
     vid_files = []
@@ -41,11 +43,20 @@ def start():
     word_count = len(audio_text.split(" "))
     audio_path = tts(text=audio_text)
     # print(audio_text)
+    assert title is not None, "Title must exist."
+    assert abstract is not None, "Abstract must exist."
+    assert audio_text is not None, "Audiotext must exist."
+    assert word_count is not None, "word_count must exist."
+    assert audio_path is not None, "audio_path must exist."
 
     keywords = story.get("adx_keywords").split(";")
-    # print(keywords)
+    assert len(keywords) > 0, f"Die Story enthält keine Keywords."
 
     vid_files = get_video_links_from_keywords(keywords, n=word_count // 5)
+
+    assert (
+        len(vid_files) > 0
+    ), f"Für die Keywords: [{', '.join(keywords)}] wurde kein Video gefunden."
 
     video_path = create_video(vid_files, audio_path, title, abstract)
 
