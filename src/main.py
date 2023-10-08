@@ -17,12 +17,10 @@ def clear_directory(dir):
 
 
 def get_video_links_from_keywords(keywords, n):
-    videos = [get_videos_by_keyword(kw, n // len(keywords) + 1) for kw in keywords]
-
     footage = [
-        video_object.get("video_files")
-        for video_object in videos
-        if video_object is not None
+        f.get("video_files")
+        for kw in keywords
+        for f in get_videos_by_keyword(kw, n // len(keywords) + 1)
     ][:n]
 
     vid_files = []
