@@ -2,10 +2,18 @@ version: "3"
 services:
   video_creator:
     build: .
+    command: ["python", "src/getStory.py"]
+    # command: ["python", "src/createVideo.py"]
     image: anicklaus/social-media-news
     volumes:
       - ./out:/usr/src/app/out
       - ./sources:/usr/src/app/sources
-      - ./google:/usr/src/app/google
+      # - ./google:/usr/src/app/google
     env_file:
     - .env
+  tts:
+    image: ghcr.io/coqui-ai/tts-cpu
+    volumes:
+      - ./out:/out
+    entrypoint: /bin/bash
+    command: -c 'tts --text "$(cat /out/audio_text.txt)" --out_path "/out/tts.wav"'

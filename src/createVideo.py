@@ -1,11 +1,9 @@
-from news import get_all, get_one
-from footage import get_photos_by_keyword, get_videos_by_keyword
-from editing import create_video
-from tts import tts
-from socials import post
-from mail import send
 import os
-
+from footage import get_videos_by_keyword
+from editing import create_video
+from mail import send
+from socials import post
+import yaml
 
 def clear_directory(dir):
     for f in os.listdir(dir):
@@ -14,7 +12,6 @@ def clear_directory(dir):
             os.remove(filepath)
         except Exception:
             print(f"{filepath} not found")
-
 
 def get_video_links_from_keywords(keywords, n):
     footage = [
@@ -31,31 +28,29 @@ def get_video_links_from_keywords(keywords, n):
 
     return vid_files
 
+audio_path = "out/tts.wav"
 
 def start():
-    story = get_one()
+    with open("out/audio_text.txt", "r") as audio_text_file:
+        audio_text = audio_text_file.read()
+    word_count = len(audio_text.split(" "))
 
+    with open("out/story.yaml", "r") as story_file:
+        story = yaml.safe_load(story_file)
     title = story.get("title")
     abstract = story.get("abstract")
-    audio_text = f"{title}. {abstract}"
-    word_count = len(audio_text.split(" "))
-    # print(audio_text)
+    keywords = story.get("adx_keywords").split(";")
+    assert len(keywords) > 0, f"Die Story enthält keine Keywords."
     assert title is not None, "Title must exist."
     assert abstract is not None, "Abstract must exist."
     assert audio_text is not None, "Audiotext must exist."
     assert word_count is not None, "word_count must exist."
-    # audio_path = tts(text=audio_text)
-    # assert audio_path is not None, "audio_path must exist."
-
-    keywords = story.get("adx_keywords").split(";")
-    assert len(keywords) > 0, f"Die Story enthält keine Keywords."
 
     vid_files = get_video_links_from_keywords(keywords, n=word_count // 5)
 
     assert (
         len(vid_files) > 0
     ), f"Für die Keywords: [{', '.join(keywords)}] wurde kein Video gefunden."
-
 
     video_path = create_video(vid_files, audio_path, title, abstract)
 
@@ -72,10 +67,9 @@ def start():
 
     print(caption)
     send(caption, video_path)
-    # TODO: integrate social media
     post(video_path, caption)
 
-    # clear_directory("out")
+    clear_directory("out")
 
 
 if __name__ == "__main__":

@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker-compose-up:
+
+  createStory:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
       - name: Login to Docker Hub
@@ -16,16 +16,51 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Create Google Cloud credentials file
-        run: mkdir ./google && touch ./google/credentials.json
-
-      - name: Save Google Cloud credentials
-        run: echo $GCLOUD_CREDENTIALS > ./google/credentials.json
-        env:
-          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
-
+      # - name: Checkout
+      #   uses: actions/checkout@v3
       - name: Start container
-        run: docker run --name video-creator -v $(pwd)/google:/usr/src/app/google -e "GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/google/credentials.json" -e "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" -e "NEWS_API_KEY=${{ secrets.NEWS_API_KEY }}" -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" -e "GMAIL_SENDER_ADDRESS=${{ secrets.GMAIL_SENDER_ADDRESS }}" -e "GMAIL_RECEIVER_ADDRESS=${{ secrets.GMAIL_RECEIVER_ADDRESS }}" -e "GMAIL_ACCESS_TOKEN=${{ secrets.GMAIL_ACCESS_TOKEN }}" -e "IG_ACCESS_TOKEN=${{ secrets.IG_ACCESS_TOKEN }}" anicklaus/social-media-news
+        run: docker run --rm -v ./out:/usr/src/app/out/ -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" anicklaus/social-media-news python src/getStory.py
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: out-directory
+          path: /usr/src/app/out
+          
+  createAudioFile:
+    runs-on: ubuntu-latest
+    needs: createStory
+            
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@master
+        with:
+          name: out-directory
+          path: /out
+      - name: Create Voice Audio File
+        # run: docker-compose up tts
+        run: docker run --rm -v ./out:/out --entrypoint="/bin/bash" ghcr.io/coqui-ai/tts-cpu  -c 'tts --text "$(cat /out/audio_text.txt)" --out_path "/out/tts.wav"'
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: out-directory
+          path: /usr/src/app/out
+  
+  createVideo:
+    runs-on: ubuntu-latest
+    needs: [createStory, createAudioFile]
+
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: Checkout
+      #   uses: actions/checkout@v3
+      - name: Download Artifacts
+        uses: actions/download-artifact@master
+        with:
+          name: out-directory
+          path: /out
+      - name: Start container
+        run: docker run --rm -v ./out:/usr/src/app/out/ -e "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" -e "GMAIL_SENDER_ADDRESS=${{ secrets.GMAIL_SENDER_ADDRESS }}" -e "GMAIL_RECEIVER_ADDRESS=${{ secrets.GMAIL_RECEIVER_ADDRESS }}" -e "GMAIL_ACCESS_TOKEN=${{ secrets.GMAIL_ACCESS_TOKEN }}" -e "IG_ACCESS_TOKEN=${{ secrets.IG_ACCESS_TOKEN }}" anicklaus/social-media-news python src/getStory.py
