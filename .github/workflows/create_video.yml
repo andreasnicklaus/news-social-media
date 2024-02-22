@@ -21,12 +21,12 @@ jobs:
       - name: Start container
         run: docker run --rm -v ./out:/usr/src/app/out/ -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" anicklaus/social-media-news python src/getStory.py
       - name: List Output
-        run: ls -al /usr/src/app/out
+        run: ls -al ./out
       - name: Upload Artifacts
         uses: actions/upload-artifact@master
         with:
           name: out-directory
-          path: /usr/src/app/out/
+          path: ./out/
           if-no-files-found: error
           
   createAudioFile:
@@ -38,15 +38,17 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: out-directory
-          path: /out/
+          path: ./out/
       - name: Create Voice Audio File
         # run: docker-compose up tts
         run: docker run --rm -v ./out:/out --entrypoint="/bin/bash" ghcr.io/coqui-ai/tts-cpu  -c 'tts --text "$(cat /out/audio_text.txt)" --out_path "/out/tts.wav"'
+      - name: List Output
+        run: ls -al ./out
       - name: Upload Artifacts
         uses: actions/upload-artifact@master
         with:
           name: out-directory
-          path: /usr/src/app/out/
+          path: ./out/
           if-no-files-found: error
   
   createVideo:
