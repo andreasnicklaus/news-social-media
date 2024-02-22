@@ -20,11 +20,14 @@ jobs:
       #   uses: actions/checkout@v3
       - name: Start container
         run: docker run --rm -v ./out:/usr/src/app/out/ -e "NYT_API_KEY=${{ secrets.NYT_API_KEY }}" anicklaus/social-media-news python src/getStory.py
+      - name: List Output
+        run: ls -al /usr/src/app/out
       - name: Upload Artifacts
         uses: actions/upload-artifact@master
         with:
           name: out-directory
           path: /usr/src/app/out/
+          if-no-files-found: error
           
   createAudioFile:
     runs-on: ubuntu-latest
@@ -44,6 +47,7 @@ jobs:
         with:
           name: out-directory
           path: /usr/src/app/out/
+          if-no-files-found: error
   
   createVideo:
     runs-on: ubuntu-latest
