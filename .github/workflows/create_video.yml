@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: out-directory
-          path: ./out/
+          path: ./out/tts.wav
           if-no-files-found: error
   
   createVideo:
