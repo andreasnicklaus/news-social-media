@@ -66,9 +66,16 @@ def start():
     Data provided by The New York Times (https://developer.nytimes.com)"""
 
     print(caption)
-    send(caption, video_path)
-    post(video_path, caption)
-
+    try:
+        send(caption, video_path)
+    except Exception as e:
+        send(caption)
+    
+    try:
+        post(video_path, caption)
+    except Exception as e:
+        print(e)
+    
     clear_directory("out")
 
 

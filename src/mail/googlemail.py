@@ -18,16 +18,6 @@ def send_with_attachment(content, attachment):
     recipient_email = GMAIL_RECEIVER_ADDRESS
     sender_password = GMAIL_ACCESS_TOKEN
 
-    with open(attachment, "rb") as attachment_file:
-        # Add the attachment to the message
-        part = MIMEBase("application", "octet-stream")
-        part.set_payload(attachment_file.read())
-    encoders.encode_base64(part)
-    part.add_header(
-        "Content-Disposition",
-        f"attachment; filename={attachment.split('/')[-1]}",
-    )
-
     now = dt.now()
 
     message = MIMEMultipart()
@@ -38,7 +28,18 @@ def send_with_attachment(content, attachment):
     message["To"] = recipient_email
     html_part = MIMEText(content)
     message.attach(html_part)
-    message.attach(part)
+
+    if (attachment):
+        with open(attachment, "rb") as attachment_file:
+            # Add the attachment to the message
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(attachment_file.read())
+        encoders.encode_base64(part)
+        part.add_header(
+            "Content-Disposition",
+            f"attachment; filename={attachment.split('/')[-1]}",
+        )
+        message.attach(part)
 
     with smtplib.SMTP_SSL("smtp.googlemail.com", 465) as server:
         server.login(sender_email, sender_password)
