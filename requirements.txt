@@ -1,5 +1,5 @@
 moviepy
-Pillow==9.5.0
+Pillow
 # google-cloud-texttospeech
 secure-smtplib
 pyyaml

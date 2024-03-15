@@ -7,6 +7,10 @@ from moviepy.editor import (
     CompositeVideoClip,
 )
 
+from PIL import Image
+
+Image.ANTIALIAS = Image.LANCZOS
+
 
 def create_video(out_path, file_paths, audio, title, abstract):
     audioclip = AudioFileClip(audio)

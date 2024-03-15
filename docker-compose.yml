@@ -8,7 +8,6 @@ services:
     volumes:
       - ./out:/usr/src/app/out
       - ./sources:/usr/src/app/sources
-      # - ./google:/usr/src/app/google
     env_file:
     - .env
   tts:
